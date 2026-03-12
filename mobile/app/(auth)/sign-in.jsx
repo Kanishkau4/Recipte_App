@@ -10,7 +10,7 @@ import { TouchableOpacity } from 'react-native';
 const SignInScreen = () => {
   const router = useRouter();
 
-  const { signIn, setActive, isLocated } = useSignIn();
+  const { signIn, setActive, isLoaded } = useSignIn();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -18,29 +18,29 @@ const SignInScreen = () => {
 
   const handleSignIn = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please enter your email and password.');
-    } else if (!isLocated) {
-      Alert.alert('Error', 'Please allow location access to use this feature.');
-      return;
+      return Alert.alert('Error', 'Please enter your email and password.');
     }
 
-    if (!isLoaded) return;
+    if (!signIn) return;
     setLoading(true);
 
     try {
-      const signInAttempt = await signIn.start({
+      const signInAttempt = await signIn.create({
         identifier: email,
         password: password,
       });
       if (signInAttempt.status === 'complete') {
-        router.push('/');
+        await setActive({ session: signInAttempt.createdSessionId });
+        router.push('/(tabs)');
       } else {
         Alert.alert('Error', 'Sign in failed. Please try again later.');
         console.error(JSON.stringify(signInAttempt, null, 2));
       }
     } catch (error) {
-      Alert.alert('Error', 'Sign in failed. Please try again later.');
+      Alert.alert('Error', error.errors?.[0]?.message || 'Sign in failed. Please try again later.');
       console.error(JSON.stringify(error, null, 2));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -52,15 +52,16 @@ const SignInScreen = () => {
         keyboardVerticalOffset={Platform.OS === 'android' ? 10 : 0}
       >
         <ScrollView
-          contentContainerStyle={authStyles.scrollContainer}
+          contentContainerStyle={authStyles.scrollContent}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
           <View style={authStyles.imageContainer}>
             <Image source={require('../../assets/images/p1.png')} style={authStyles.image} contentFit="contain" />
           </View>
           <Text style={authStyles.title}>Welcome back</Text>
-          {/* FORM CONTAINER */}
-          <View style={authStyles.formContainer}>
+          
+          <View style={authStyles.inputContainer}>
             <TextInput
               style={authStyles.textInput}
               placeholder="Enter your email"
@@ -71,8 +72,8 @@ const SignInScreen = () => {
               autoCapitalize="none"
             />
           </View>
-          {/*PASSWORD INPUT*/}
-          <View style={authStyles.formContainer}>
+
+          <View style={authStyles.inputContainer}>
             <TextInput
               style={authStyles.textInput}
               placeholder="Enter your password"
@@ -83,7 +84,7 @@ const SignInScreen = () => {
               autoCapitalize="none"
             />
             <TouchableOpacity
-              style={authStyles.eyeIcon}
+              style={authStyles.eyeButton}
               onPress={() => setShowPassword(!showPassword)}
             >
               <Ionicons
@@ -93,8 +94,8 @@ const SignInScreen = () => {
               />
             </TouchableOpacity>
           </View>
-          {/*SIGN IN BUTTON*/}
-          <TouchableOpacity style={[authStyles.authButton, loading && authStyles.authButtonDisabled]}
+
+          <TouchableOpacity style={[authStyles.authButton, loading && authStyles.buttonDisabled]}
             onPress={handleSignIn}
             disabled={loading}
             activeOpacity={0.8}
@@ -102,7 +103,6 @@ const SignInScreen = () => {
             <Text style={authStyles.buttonText}>{loading ? 'Signing in...' : 'Sign In'}</Text>
           </TouchableOpacity>
 
-          {/*SIGN UP LINK*/}
           <TouchableOpacity
             style={authStyles.linkContainer}
             onPress={() => router.push('/(auth)/sign-up')}>
@@ -114,5 +114,6 @@ const SignInScreen = () => {
     </View>
   );
 }
+
 
 export default SignInScreen;
