@@ -9,7 +9,7 @@ import { Image } from 'expo-image';
 
 const SignUpScreen = () => {
   const router = useRouter();
-  // isLoaded එක අනිවාර්යයෙන්ම ගන්න ඕනේ
+  // isLoaded is required
   const { isLoaded, signUp } = useSignUp();
 
   const [email, setEmail] = useState('');
@@ -30,7 +30,7 @@ const SignUpScreen = () => {
     setLoading(true);
     try {
       // 2. Create Sign Up using the NEW method: signUp.password
-      // මෙතනදි create() වෙනුවට password() පාවිච්චි කරනවා
+      // create() instead of password()
       const { error } = await signUp.password({
         emailAddress: email,
         password: password,
@@ -38,7 +38,7 @@ const SignUpScreen = () => {
 
       if (error) {
         console.error('[SignUp Error]:', JSON.stringify(error, null, 2));
-        throw error; // Error එක catch block එකට යවනවා
+        throw error; // Error is sent to the catch block
       }
 
       // 3. Send Email Verification Code using NEW method

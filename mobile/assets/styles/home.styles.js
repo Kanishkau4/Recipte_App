@@ -21,10 +21,26 @@ export const homeStyles = StyleSheet.create({
         justifyContent: "space-between",
     },
     welcomeText: {
-        fontSize: 32,
+        fontSize: 28,
         fontWeight: "800",
         color: COLORS.text,
         letterSpacing: -0.5,
+        lineHeight: 34,
+    },
+    profileButton: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: COLORS.card,
+        alignItems: "center",
+        justifyContent: "center",
+        borderWidth: 1,
+        borderColor: COLORS.border,
+        shadowColor: COLORS.shadow,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
     },
     featuredSection: {
         paddingHorizontal: 20,
@@ -97,7 +113,7 @@ export const homeStyles = StyleSheet.create({
         fontWeight: "600",
     },
     recipesSection: {
-        paddingHorizontal: 20,
+        paddingHorizontal: 16,
         marginTop: 8,
     },
     sectionHeader: {

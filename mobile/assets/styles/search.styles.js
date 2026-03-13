@@ -6,124 +6,69 @@ export const searchStyles = StyleSheet.create({
         flex: 1,
         backgroundColor: COLORS.background,
     },
-    searchSection: {
-        paddingHorizontal: 16,
-        paddingTop: 16,
+    header: {
+        paddingHorizontal: 20,
+        paddingTop: 20,
+        paddingBottom: 16,
     },
-    searchContainer: {
+    title: {
+        fontSize: 28,
+        fontWeight: "800",
+        color: COLORS.text,
+        marginBottom: 20,
+    },
+    searchBar: {
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: COLORS.card,
         borderRadius: 16,
         paddingHorizontal: 16,
-        paddingVertical: 12,
+        height: 56,
         borderWidth: 1,
         borderColor: COLORS.border,
         shadowColor: COLORS.shadow,
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 4,
         elevation: 2,
     },
-    searchIcon: {
-        marginRight: 12,
-    },
     searchInput: {
         flex: 1,
+        marginLeft: 12,
         fontSize: 16,
         color: COLORS.text,
-    },
-    clearButton: {
-        padding: 4,
-    },
-    quickFilters: {
-        marginTop: 20,
-    },
-    filterLabel: {
-        fontSize: 16,
-        fontWeight: "600",
-        color: COLORS.text,
-        marginBottom: 12,
-    },
-    filterButtons: {
-        flexDirection: "row",
-        gap: 12,
-    },
-    quickFilterButton: {
-        backgroundColor: COLORS.card,
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 20,
-        borderWidth: 1,
-        borderColor: COLORS.border,
-    },
-    activeQuickFilter: {
-        backgroundColor: COLORS.primary,
-        borderColor: COLORS.primary,
-    },
-    quickFilterText: {
-        fontSize: 14,
-        fontWeight: "500",
-        color: COLORS.text,
-    },
-    activeQuickFilterText: {
-        color: COLORS.white,
-    },
-    resultsSection: {
-        flex: 1,
-        paddingHorizontal: 16,
-        marginTop: 8,
-    },
-    resultsHeader: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: 16,
-        marginTop: 16,
-    },
-    resultsTitle: {
-        fontSize: 18,
-        fontWeight: "bold",
-        color: COLORS.text,
-        flex: 1,
-    },
-    resultsCount: {
-        fontSize: 14,
-        color: COLORS.textLight,
         fontWeight: "500",
     },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    recipesGrid: {
-        gap: 16,
-        paddingBottom: 32,
+    listContent: {
+        paddingHorizontal: 20,
+        paddingBottom: 20,
     },
     row: {
         justifyContent: "space-between",
     },
-    emptyState: {
+    loaderContainer: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        paddingVertical: 64,
     },
-    emptyTitle: {
-        fontSize: 20,
-        fontWeight: "bold",
-        color: COLORS.text,
+    emptyContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: 40,
+        marginTop: 100,
+    },
+    emptyText: {
         marginTop: 16,
-        marginBottom: 8,
+        fontSize: 18,
+        fontWeight: "700",
+        color: COLORS.text,
+        textAlign: "center",
     },
-    emptyDescription: {
+    emptySubtext: {
+        marginTop: 8,
         fontSize: 14,
         color: COLORS.textLight,
         textAlign: "center",
-        lineHeight: 20,
     },
 });
