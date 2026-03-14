@@ -109,9 +109,13 @@ export const MealAPI = {
         // Format instructions
         const instructions = meal.strInstructions
             ? meal.strInstructions
-                .split('\r\n')
+                .split(/\r\n|\r|\n/)
                 .map(step => step.trim())
-                .filter(step => step.length > 0)
+                .filter(step => {
+                    // Filter out empty steps and redundant "Step 1", "Step 1:", "Step 1." lines
+                    const isRedundantStepLabel = /^step\s*\d+[:.]?$/i.test(step);
+                    return step.length > 0 && !isRedundantStepLabel;
+                })
             : [];
 
         return {

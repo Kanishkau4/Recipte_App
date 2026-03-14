@@ -1,44 +1,92 @@
-import { View, Text, StyleSheet, Alert, KeyboardAvoidingView, Platform, TextInput, ScrollView, Image } from 'react-native';
+import { View, Text, Alert, KeyboardAvoidingView, Platform, TextInput, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { useSignIn } from '@clerk/expo';
+import { useSignIn, useClerk } from '@clerk/expo';
 import { authStyles } from '../../assets/styles/auth.styles';
 import { COLORS } from '../../constants/colors';
 import { Ionicons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native';
+import { Image } from 'expo-image';
 
 const SignInScreen = () => {
   const router = useRouter();
+  const { signIn } = useSignIn(); // isLoaded removed
+  const { setActive } = useClerk();
 
-  const { signIn, setActive, isLoaded } = useSignIn();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSignIn = async () => {
-    if (!email || !password) {
+    // return Alert if signIn is not ready
+    if (!signIn) {
+      return Alert.alert('Wait', 'Sign in is not ready yet. Please wait a second.');
+    }
+
+    // return Alert if email or password is empty
+    const cleanEmail = email.trim();
+
+    if (!cleanEmail || !password) {
       return Alert.alert('Error', 'Please enter your email and password.');
     }
 
-    if (!signIn) return;
     setLoading(true);
 
     try {
-      const signInAttempt = await signIn.create({
-        identifier: email,
-        password: password,
-      });
-      if (signInAttempt.status === 'complete') {
-        await setActive({ session: signInAttempt.createdSessionId });
-        router.push('/(tabs)');
-      } else {
-        Alert.alert('Error', 'Sign in failed. Please try again later.');
-        console.error(JSON.stringify(signInAttempt, null, 2));
+      console.log('[SignIn] Attempting to sign in with:', cleanEmail);
+      let result;
+
+      // if signIn.password is a function, use it
+      if (typeof signIn.password === 'function') {
+        console.log('[SignIn] Using signIn.password() API');
+
+        // call signIn.password with email and password
+        const response = await signIn.password({
+          emailAddress: cleanEmail,
+          password: password,
+        });
+
+        // if response.error is not null, throw it
+        if (response?.error) {
+          console.error('[SignIn Error Response]:', response.error);
+          throw response.error;
+        }
+
+        result = signIn; // if signIn.password is a function, use it
       }
+      // ---------------- Clerk API (v4 - Backup) ----------------
+      else {
+        console.log('[SignIn] Using signIn.create() API');
+        result = await signIn.create({
+          identifier: cleanEmail,
+          password: password,
+        });
+      }
+
+      console.log('[SignIn] Result Status:', result.status);
+
+      if (result.status === 'complete') {
+        console.log('[SignIn] Success! Activating session...');
+
+        // activate session
+        await setActive({ session: result.createdSessionId || signIn.createdSessionId });
+
+        // navigate to home
+        router.replace('/(tabs)');
+      }
+      else {
+        console.warn('[SignIn] Incomplete status:', result.status);
+        Alert.alert('Verification Pending', 'Could not complete sign in. Please try again.');
+      }
+
     } catch (error) {
-      Alert.alert('Error', error.errors?.[0]?.message || 'Sign in failed. Please try again later.');
-      console.error(JSON.stringify(error, null, 2));
+      console.error('[SignIn Error Caught]:', error);
+
+      const clerkErrors = error?.errors;
+      const firstErr = clerkErrors?.[0];
+      const msg = firstErr?.longMessage || firstErr?.message || error?.message || 'Sign in failed. Please check your credentials and try again.';
+
+      Alert.alert('Sign In Failed', msg);
     } finally {
       setLoading(false);
     }
@@ -60,7 +108,7 @@ const SignInScreen = () => {
             <Image source={require('../../assets/images/p1.png')} style={authStyles.image} contentFit="contain" />
           </View>
           <Text style={authStyles.title}>Welcome back</Text>
-          
+
           <View style={authStyles.inputContainer}>
             <TextInput
               style={authStyles.textInput}
@@ -95,7 +143,8 @@ const SignInScreen = () => {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={[authStyles.authButton, loading && authStyles.buttonDisabled]}
+          <TouchableOpacity
+            style={[authStyles.authButton, loading && authStyles.buttonDisabled]}
             onPress={handleSignIn}
             disabled={loading}
             activeOpacity={0.8}
@@ -107,13 +156,13 @@ const SignInScreen = () => {
             style={authStyles.linkContainer}
             onPress={() => router.push('/(auth)/sign-up')}>
             <Text style={authStyles.linkText}>
-              Don't have an account? <Text style={authStyles.link}>Sign Up</Text></Text>
+              Don't have an account? <Text style={authStyles.link}>Sign Up</Text>
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
   );
 }
-
 
 export default SignInScreen;

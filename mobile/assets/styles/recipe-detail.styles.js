@@ -1,349 +1,335 @@
 import { StyleSheet, Dimensions } from "react-native";
 import { COLORS } from "../../constants/colors";
 
-const { height } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
-export const recipeDetailStyles = StyleSheet.create({
+export const styles = StyleSheet.create({
+
+    // ── Layout ──────────────────────────────────────────
     container: {
         flex: 1,
         backgroundColor: COLORS.background,
     },
-    headerContainer: {
-        height: height * 0.5,
+    centered: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: COLORS.background,
+        gap: 12,
+        padding: 32,
+    },
+
+    // ── Loading / Error states ───────────────────────────
+    loadingText: {
+        fontSize: 15,
+        color: COLORS.textLight,
+        marginTop: 8,
+    },
+    errorTitle: {
+        fontSize: 22,
+        fontWeight: "700",
+        color: COLORS.text,
+        marginTop: 12,
+    },
+    backBtn: {
+        marginTop: 16,
+        paddingHorizontal: 28,
+        paddingVertical: 12,
+        backgroundColor: COLORS.primary,
+        borderRadius: 30,
+    },
+    backBtnText: {
+        color: COLORS.white,
+        fontWeight: "700",
+        fontSize: 15,
+    },
+
+    // ── Hero ─────────────────────────────────────────────
+    heroContainer: {
+        width: width,
+        height: height * 0.52,
         position: "relative",
     },
-    imageContainer: {
-        ...StyleSheet.absoluteFillObject,
-    },
-    headerImage: {
+    heroImage: {
         width: "100%",
-        height: "120%",
+        height: "100%",
     },
-    gradientOverlay: {
+    heroGradient: {
         position: "absolute",
-        bottom: 0,
         left: 0,
         right: 0,
-        height: "60%",
+        bottom: 0,
+        height: "70%",
     },
-    floatingButtons: {
+
+    // ── Floating header buttons ──────────────────────────
+    headerButtons: {
         position: "absolute",
-        top: 50,
+        top: 28,
         left: 16,
         right: 16,
         flexDirection: "row",
         justifyContent: "space-between",
-    },
-    floatingButton: {
-        width: 44,
-        height: 44,
-        borderRadius: 22,
-        backgroundColor: "rgba(0, 0, 0, 0.3)",
-        justifyContent: "center",
         alignItems: "center",
-        backdropFilter: "blur(10px)",
     },
-    titleSection: {
+    headerRight: {
+        flexDirection: "row",
+        gap: 10,
+    },
+    iconButton: {
+        width: 42,
+        height: 42,
+        borderRadius: 21,
+        backgroundColor: "rgba(0,0,0,0.35)",
+        alignItems: "center",
+        justifyContent: "center",
+        borderWidth: 1,
+        borderColor: "rgba(255,255,255,0.2)",
+    },
+    iconButtonActive: {
+        backgroundColor: "rgba(224,64,94,0.35)",
+        borderColor: "rgba(255,107,138,0.4)",
+    },
+
+    // ── Hero text overlay ────────────────────────────────
+    heroTextContainer: {
         position: "absolute",
-        bottom: 30,
-        left: 16,
-        right: 16,
+        bottom: 52, // Moved up from 28
+        left: 20,
+        right: 20,
     },
     categoryBadge: {
         alignSelf: "flex-start",
         backgroundColor: COLORS.primary,
         paddingHorizontal: 12,
-        paddingVertical: 6,
+        paddingVertical: 5,
         borderRadius: 20,
-        marginBottom: 12,
-    },
-    categoryText: {
-        color: COLORS.white,
-        fontSize: 12,
-        fontWeight: "600",
-        textTransform: "uppercase",
-        letterSpacing: 1,
-    },
-    recipeTitle: {
-        fontSize: 32,
-        fontWeight: "bold",
-        color: COLORS.white,
-        marginBottom: 8,
-        textShadowColor: "rgba(0, 0, 0, 0.75)",
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 3,
-    },
-    locationRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 6,
         marginBottom: 10,
     },
-    locationText: {
-        color: COLORS.white,
-        fontSize: 16,
-        fontWeight: "500",
-        textShadowColor: "rgba(0, 0, 0, 0.75)",
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 2,
+    categoryBadgeText: {
+        color: "#fff",
+        fontSize: 11,
+        fontWeight: "700",
+        textTransform: "uppercase",
+        letterSpacing: 1.2,
     },
-    contentSection: {
+    heroTitle: {
+        fontSize: 26,
+        fontWeight: "800",
+        color: "#fff",
+        lineHeight: 34,
+        marginBottom: 12,
+        textShadowColor: "rgba(0,0,0,0.5)",
+        textShadowOffset: { width: 0, height: 1 },
+        textShadowRadius: 4,
+    },
+    metaRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10,
+    },
+    metaItem: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 5,
+    },
+    metaText: {
+        color: "rgba(255,255,255,0.9)",
+        fontSize: 13,
+        fontWeight: "600",
+    },
+    metaSep: {
+        width: 4,
+        height: 4,
+        borderRadius: 2,
+        backgroundColor: "rgba(255,255,255,0.4)",
+    },
+
+    // ── Content Card ─────────────────────────────────────
+    contentCard: {
         backgroundColor: COLORS.background,
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
-        marginTop: -30,
-        paddingTop: 30,
-        paddingHorizontal: 16,
+        marginTop: -28,
+        paddingTop: 28,
+        paddingHorizontal: 20,
         paddingBottom: 40,
+
+        // subtle top shadow
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: -4 },
+        shadowOpacity: 0.06,
+        shadowRadius: 12,
+        elevation: 10,
     },
-    statsContainer: {
-        flexDirection: "row",
-        gap: 12,
-        marginBottom: 32,
-    },
-    statCard: {
-        flex: 1,
-        backgroundColor: COLORS.card,
-        borderRadius: 20,
-        padding: 20,
-        alignItems: "center",
-        shadowColor: COLORS.shadow,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 4,
-    },
-    statIconContainer: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        justifyContent: "center",
-        alignItems: "center",
-        marginBottom: 12,
-    },
-    statValue: {
-        fontSize: 18,
-        fontWeight: "bold",
-        color: COLORS.text,
+
+    // ── Section layout ───────────────────────────────────
+    section: {
         marginBottom: 4,
     },
-    statLabel: {
-        fontSize: 12,
-        color: COLORS.textLight,
-        textAlign: "center",
-        fontWeight: "500",
-    },
-    sectionContainer: {
-        marginBottom: 32,
-    },
-    sectionTitleRow: {
+    sectionHeader: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 12,
-        flex: 1,
-        marginBottom: 16,
+        gap: 10,
+        marginBottom: 18,
     },
-    sectionIcon: {
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        justifyContent: "center",
+    sectionIconBox: {
+        width: 34,
+        height: 34,
+        borderRadius: 10,
         alignItems: "center",
+        justifyContent: "center",
     },
     sectionTitle: {
-        fontSize: 22,
-        fontWeight: "bold",
+        fontSize: 19,
+        fontWeight: "800",
         color: COLORS.text,
         flex: 1,
     },
-    countBadge: {
-        backgroundColor: COLORS.primary + "20",
+    countPill: {
+        backgroundColor: COLORS.primary + "22",
         paddingHorizontal: 10,
-        paddingVertical: 4,
-        borderRadius: 12,
+        paddingVertical: 3,
+        borderRadius: 20,
     },
-    countText: {
+    countPillText: {
         color: COLORS.primary,
         fontSize: 12,
-        fontWeight: "600",
+        fontWeight: "700",
     },
-    videoCard: {
-        height: 220,
+    divider: {
+        height: 1,
+        backgroundColor: COLORS.border,
+        marginVertical: 24,
+    },
+
+    // ── Ingredients ──────────────────────────────────────
+    ingredientsGrid: {
+        gap: 10,
+    },
+    ingredientChip: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 12,
+        backgroundColor: COLORS.card,
+        borderRadius: 16,
+        paddingVertical: 13,
+        paddingHorizontal: 16,
+        borderWidth: 1,
+        borderColor: COLORS.border,
+        shadowColor: COLORS.shadow,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.04,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    ingredientDot: {
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        backgroundColor: COLORS.primary,
+    },
+    ingredientText: {
+        fontSize: 15,
+        color: COLORS.text,
+        flex: 1,
+        fontWeight: "500",
+    },
+
+    // ── Steps ────────────────────────────────────────────
+    stepsList: {
+        gap: 14,
+    },
+    stepLabel: {
+        fontSize: 13,
+        fontWeight: "800",
+        color: COLORS.primary,
+        textTransform: "uppercase",
+        letterSpacing: 1,
+    },
+    stepCard: {
+        flex: 1,
+        backgroundColor: COLORS.card,
+        borderRadius: 16,
+        padding: 14,
+        borderWidth: 1,
+        borderColor: COLORS.border,
+        shadowColor: COLORS.shadow,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.04,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    stepText: {
+        fontSize: 15,
+        color: COLORS.text,
+        lineHeight: 23,
+    },
+
+    // ── YouTube section ──────────────────────────────────
+    youtubeCard: {
         borderRadius: 20,
         overflow: "hidden",
-        backgroundColor: COLORS.card,
-        shadowColor: COLORS.shadow,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 4,
+        height: 220,
+        backgroundColor: "#000",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.18,
+        shadowRadius: 14,
+        elevation: 8,
     },
     webview: {
         flex: 1,
+        backgroundColor: "transparent",
     },
-    ingredientsGrid: {
-        gap: 12,
+    youtubeThumbnail: {
+        width: "100%",
+        height: "100%",
     },
-    ingredientCard: {
-        flexDirection: "row",
+    youtubeOverlay: {
+        ...StyleSheet.absoluteFillObject,
         alignItems: "center",
-        backgroundColor: COLORS.card,
-        padding: 16,
-        borderRadius: 16,
-        shadowColor: COLORS.shadow,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-        elevation: 2,
-        gap: 12,
-    },
-    ingredientNumber: {
-        width: 28,
-        height: 28,
-        borderRadius: 14,
-        backgroundColor: COLORS.primary + "20",
         justifyContent: "center",
+        gap: 12,
+    },
+    playButton: {
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+        backgroundColor: "rgba(255,0,0,0.85)",
         alignItems: "center",
-    },
-    ingredientNumberText: {
-        color: COLORS.primary,
-        fontSize: 12,
-        fontWeight: "bold",
-    },
-    ingredientText: {
-        flex: 1,
-        fontSize: 16,
-        color: COLORS.text,
-        lineHeight: 22,
-    },
-    ingredientCheck: {
-        opacity: 0.5,
-    },
-    instructionsContainer: {
-        gap: 16,
-    },
-    instructionCard: {
-        flexDirection: "row",
-        backgroundColor: COLORS.card,
-        borderRadius: 20,
-        padding: 20,
-        shadowColor: COLORS.shadow,
+        justifyContent: "center",
+        shadowColor: "#FF0000",
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 4,
-        gap: 16,
+        shadowOpacity: 0.6,
+        shadowRadius: 12,
+        elevation: 10,
+        // nudge play icon to center
+        paddingLeft: 4,
     },
-    stepIndicator: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    stepNumber: {
-        color: COLORS.white,
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    instructionContent: {
-        flex: 1,
-    },
-    instructionText: {
-        fontSize: 16,
-        color: COLORS.text,
-        lineHeight: 24,
-        marginBottom: 12,
-    },
-    instructionFooter: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-    stepLabel: {
-        fontSize: 12,
-        color: COLORS.textLight,
-        fontWeight: "500",
-    },
-    completeButton: {
-        width: 24,
-        height: 24,
-        borderRadius: 12,
-        backgroundColor: COLORS.primary + "20",
-        justifyContent: "center",
-        alignItems: "center",
+    youtubeLabel: {
+        color: "#fff",
+        fontSize: 14,
+        fontWeight: "700",
+        letterSpacing: 0.3,
     },
 
-    primaryButton: {
-        borderRadius: 16,
-        overflow: "hidden",
-        shadowColor: COLORS.shadow,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 8,
-        elevation: 4,
+    // ── Save button ──────────────────────────────────────
+    saveSection: {
+        marginTop: 32,
     },
-    buttonGradient: {
+    saveButton: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 16,
         gap: 10,
+        paddingVertical: 17,
+        borderRadius: 18,
     },
-    buttonText: {
-        color: COLORS.white,
+    saveButtonText: {
+        color: "#fff",
         fontSize: 16,
-        fontWeight: "bold",
-    },
-    secondaryButton: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: COLORS.card,
-        paddingVertical: 16,
-        borderRadius: 16,
-        borderWidth: 2,
-        borderColor: COLORS.primary,
-        gap: 10,
-    },
-    secondaryButtonText: {
-        color: COLORS.primary,
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    errorContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    errorContent: {
-        alignItems: "center",
-        padding: 32,
-    },
-    errorTitle: {
-        fontSize: 28,
-        fontWeight: "bold",
-        color: COLORS.white,
-        marginTop: 20,
-        marginBottom: 12,
-    },
-    errorDescription: {
-        fontSize: 16,
-        color: COLORS.white,
-        textAlign: "center",
-        lineHeight: 22,
-        marginBottom: 32,
-        opacity: 0.9,
-    },
-    errorButton: {
-        backgroundColor: COLORS.white,
-        paddingHorizontal: 32,
-        paddingVertical: 16,
-        borderRadius: 25,
-    },
-    errorButtonText: {
-        color: COLORS.primary,
-        fontSize: 16,
-        fontWeight: "bold",
+        fontWeight: "800",
+        letterSpacing: 0.3,
     },
 });

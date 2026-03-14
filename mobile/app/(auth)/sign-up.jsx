@@ -42,7 +42,7 @@ const SignUpScreen = () => {
       }
 
       // 3. Send Email Verification Code using NEW method
-      // prepareVerification වෙනුවට verifications.sendEmailCode() පාවිච්චි කරනවා
+      // prepareVerification instead of verifications.sendEmailCode()
       await signUp.verifications.sendEmailCode();
 
       console.log('[SignUp] Verification code sent successfully!');
