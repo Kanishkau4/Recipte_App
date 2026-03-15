@@ -1,9 +1,9 @@
 import { View, Text, Alert, KeyboardAvoidingView, Platform, TextInput, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useSignIn, useClerk } from '@clerk/expo';
-import { authStyles } from '../../assets/styles/auth.styles';
-import { COLORS } from '../../constants/colors';
+import { makeAuthStyles } from '../../assets/styles/auth.styles';
+import { useTheme } from '../../context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 
@@ -11,6 +11,9 @@ const SignInScreen = () => {
   const router = useRouter();
   const { signIn } = useSignIn(); // isLoaded removed
   const { setActive } = useClerk();
+  
+  const { colors } = useTheme();
+  const authStyles = useMemo(() => makeAuthStyles(colors), [colors]);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -113,7 +116,7 @@ const SignInScreen = () => {
             <TextInput
               style={authStyles.textInput}
               placeholder="Enter your email"
-              placeholderTextColor={COLORS.textLight}
+              placeholderTextColor={colors.textLight}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -125,7 +128,7 @@ const SignInScreen = () => {
             <TextInput
               style={authStyles.textInput}
               placeholder="Enter your password"
-              placeholderTextColor={COLORS.textLight}
+              placeholderTextColor={colors.textLight}
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
@@ -138,7 +141,7 @@ const SignInScreen = () => {
               <Ionicons
                 name={showPassword ? 'eye-off' : 'eye'}
                 size={20}
-                color={COLORS.textLight}
+                color={colors.textLight}
               />
             </TouchableOpacity>
           </View>

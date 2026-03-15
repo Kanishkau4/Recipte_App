@@ -1,10 +1,13 @@
-import React from 'react';
-import { ScrollView, TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import React, { useMemo } from 'react';
+import { ScrollView, TouchableOpacity, View, Text } from 'react-native';
 import { Image } from 'expo-image';
-import { COLORS } from '../constants/colors';
-import { homeStyles } from '../assets/styles/home.styles';
+import { useTheme } from '../context/ThemeContext';
+import { makeHomeStyles } from '../assets/styles/home.styles';
 
 const CategoryFilter = ({ categories, selectedCategory, onSelectCategory }) => {
+    const { colors } = useTheme();
+    const homeStyles = useMemo(() => makeHomeStyles(colors), [colors]);
+
     return (
         <View style={homeStyles.categoryFilterContainer}>
             <ScrollView

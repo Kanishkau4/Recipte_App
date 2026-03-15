@@ -1,9 +1,8 @@
 import { StyleSheet, Dimensions } from "react-native";
-import { COLORS } from "../../constants/colors";
 
 const { width, height } = Dimensions.get("window");
 
-export const styles = StyleSheet.create({
+export const makeRecipeDetailStyles = (COLORS) => StyleSheet.create({
 
     // ── Layout ──────────────────────────────────────────
     container: {
@@ -94,7 +93,7 @@ export const styles = StyleSheet.create({
     // ── Hero text overlay ────────────────────────────────
     heroTextContainer: {
         position: "absolute",
-        bottom: 52, // Moved up from 28
+        bottom: 52,
         left: 20,
         right: 20,
     },
@@ -154,8 +153,6 @@ export const styles = StyleSheet.create({
         paddingTop: 28,
         paddingHorizontal: 20,
         paddingBottom: 40,
-
-        // subtle top shadow
         shadowColor: "#000",
         shadowOffset: { width: 0, height: -4 },
         shadowOpacity: 0.06,
@@ -304,7 +301,6 @@ export const styles = StyleSheet.create({
         shadowOpacity: 0.6,
         shadowRadius: 12,
         elevation: 10,
-        // nudge play icon to center
         paddingLeft: 4,
     },
     youtubeLabel: {

@@ -2,20 +2,23 @@ import { Redirect } from "expo-router";
 import { useAuth } from "@clerk/expo";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { COLORS } from "../../constants/colors";
+import { useTheme } from "../../context/ThemeContext";
 
 const TabsLayout = () => {
     const { isSignedIn } = useAuth();
+    const { colors } = useTheme();
+
     if (!isSignedIn) return <Redirect href="/(auth)/sign-in" />;
+    
     return (
         <Tabs
             screenOptions={{
                 headerShown: false,
-                tabBarActiveTintColor: COLORS.primary,
-                tabBarInactiveTintColor: COLORS.textLight,
+                tabBarActiveTintColor: colors.primary,
+                tabBarInactiveTintColor: colors.textLight,
                 tabBarStyle: {
-                    backgroundColor: COLORS.white,
-                    borderColor: COLORS.border,
+                    backgroundColor: colors.white,
+                    borderColor: colors.border,
                     borderTopWidth: 1,
                     paddingBottom: 8,
                     paddingTop: 8,

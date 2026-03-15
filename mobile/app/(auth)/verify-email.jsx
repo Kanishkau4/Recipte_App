@@ -1,10 +1,10 @@
 import { View, Text, Alert, KeyboardAvoidingView, Platform, TextInput, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 // 💡 අලුතින් useClerk එක ගත්තා
 import { useSignUp, useClerk } from '@clerk/expo';
-import { authStyles } from '../../assets/styles/auth.styles';
-import { COLORS } from '../../constants/colors';
+import { makeAuthStyles } from '../../assets/styles/auth.styles';
+import { useTheme } from '../../context/ThemeContext';
 import { Image } from 'expo-image';
 
 const VerifyEmailScreen = () => {
@@ -15,6 +15,9 @@ const VerifyEmailScreen = () => {
   const { signUp } = useSignUp();
   // 💡 setActive එක ගන්නේ useClerk එකෙන්!
   const { setActive } = useClerk();
+  
+  const { colors } = useTheme();
+  const authStyles = useMemo(() => makeAuthStyles(colors), [colors]);
 
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -118,7 +121,7 @@ const VerifyEmailScreen = () => {
             <TextInput
               style={authStyles.textInput}
               placeholder="Enter 6-digit code"
-              placeholderTextColor={COLORS.textLight}
+              placeholderTextColor={colors.textLight}
               value={code}
               onChangeText={setCode}
               keyboardType="number-pad"

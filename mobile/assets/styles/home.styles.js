@@ -1,10 +1,9 @@
 import { StyleSheet, Dimensions } from "react-native";
-import { COLORS } from "../../constants/colors";
 
 const { width } = Dimensions.get("window");
 const cardWidth = (width - 48) / 2;
 
-export const homeStyles = StyleSheet.create({
+export const makeHomeStyles = (COLORS) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.background,
@@ -27,6 +26,11 @@ export const homeStyles = StyleSheet.create({
         letterSpacing: -0.5,
         lineHeight: 34,
     },
+    headerActions: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10,
+    },
     profileButton: {
         width: 44,
         height: 44,
@@ -41,6 +45,19 @@ export const homeStyles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 3,
+    },
+    themeButton: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: COLORS.primary,
+        alignItems: "center",
+        justifyContent: "center",
+        shadowColor: COLORS.primary,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.35,
+        shadowRadius: 8,
+        elevation: 5,
     },
     featuredSection: {
         paddingHorizontal: 20,
@@ -203,7 +220,7 @@ export const homeStyles = StyleSheet.create({
     },
 });
 
-export const recipeCardStyles = StyleSheet.create({
+export const makeRecipeCardStyles = (COLORS) => StyleSheet.create({
     container: {
         width: cardWidth,
         backgroundColor: COLORS.card,

@@ -11,15 +11,15 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { MealAPI } from "../../services/mealAPI";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
-import { COLORS } from "../../constants/colors";
 import { useUser } from "@clerk/expo";
 import { API_URL } from "../../constants/api";
 import { LinearGradient } from "expo-linear-gradient";
 import { WebView } from "react-native-webview";
-import { styles } from "../../assets/styles/recipe-detail.styles";
+import { makeRecipeDetailStyles } from "../../assets/styles/recipe-detail.styles";
+import { useTheme } from "../../context/ThemeContext";
 
 const { width, height } = Dimensions.get("window");
 
@@ -28,6 +28,8 @@ const RecipeDetailScreen = () => {
     const router = useRouter();
     const { user } = useUser();
     const userId = user?.id;
+    const { colors } = useTheme();
+    const styles = useMemo(() => makeRecipeDetailStyles(colors), [colors]);
 
     const [recipe, setRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -124,7 +126,7 @@ const RecipeDetailScreen = () => {
     if (loading) {
         return (
             <View style={styles.centered}>
-                <ActivityIndicator size="large" color={COLORS.primary} />
+                <ActivityIndicator size="large" color={colors.primary} />
                 <Text style={styles.loadingText}>Loading recipe...</Text>
             </View>
         );
@@ -133,7 +135,7 @@ const RecipeDetailScreen = () => {
     if (!recipe) {
         return (
             <View style={styles.centered}>
-                <Ionicons name="alert-circle-outline" size={60} color={COLORS.primary} />
+                <Ionicons name="alert-circle-outline" size={60} color={colors.primary} />
                 <Text style={styles.errorTitle}>Recipe not found</Text>
                 <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
                     <Text style={styles.backBtnText}>Go Back</Text>
@@ -217,7 +219,7 @@ const RecipeDetailScreen = () => {
                     <View style={styles.section}>
                         <View style={styles.sectionHeader}>
                             <LinearGradient
-                                colors={[COLORS.primary, COLORS.primary + "AA"]}
+                                colors={[colors.primary, colors.primary + "AA"]}
                                 style={styles.sectionIconBox}
                             >
                                 <Ionicons name="basket-outline" size={18} color="#fff" />
@@ -244,7 +246,7 @@ const RecipeDetailScreen = () => {
                     <View style={styles.section}>
                         <View style={styles.sectionHeader}>
                             <LinearGradient
-                                colors={[COLORS.primary, COLORS.primary + "AA"]}
+                                colors={[colors.primary, colors.primary + "AA"]}
                                 style={styles.sectionIconBox}
                             >
                                 <Ionicons name="list-outline" size={18} color="#fff" />
@@ -306,7 +308,7 @@ const RecipeDetailScreen = () => {
                                 colors={
                                     isSaved
                                         ? ["#FF6B8A", "#E0405E"]
-                                        : [COLORS.primary, COLORS.primary + "CC"]
+                                        : [colors.primary, colors.primary + "CC"]
                                 }
                                 start={{ x: 0, y: 0 }}
                                 end={{ x: 1, y: 0 }}

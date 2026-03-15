@@ -1,22 +1,27 @@
 import { View, Text, ScrollView, TouchableOpacity, FlatList, RefreshControl } from "react-native";
 import { useRouter } from "expo-router";
 import { MealAPI } from "../../services/mealAPI";
-import { useState, useEffect, useCallback } from "react";
-import { homeStyles } from "../../assets/styles/home.styles";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { makeHomeStyles } from "../../assets/styles/home.styles";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
-import { COLORS } from "../../constants/colors";
+import { useTheme } from "../../context/ThemeContext";
 import CategoryFilter from "../../components/CategoryFilter";
 import RecipeCard from "../../components/RecipeCard";
+import ThemePicker from "../../components/ThemePicker";
 
 const HomeScreen = () => {
     const router = useRouter();
+    const { colors } = useTheme();
+    const homeStyles = useMemo(() => makeHomeStyles(colors), [colors]);
+
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [recipes, setRecipes] = useState([]);
     const [categories, setCategories] = useState([]);
     const [featuredRecipe, setFeaturedRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [themePickerVisible, setThemePickerVisible] = useState(false);
 
     const loadData = async () => {
         try {
@@ -92,7 +97,7 @@ const HomeScreen = () => {
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
                 }
                 contentContainerStyle={homeStyles.scrollContent}
             >
@@ -100,14 +105,25 @@ const HomeScreen = () => {
                 <View style={homeStyles.welcomeSection}>
                     <View>
                         <Text style={homeStyles.welcomeText}>What would you like</Text>
-                        <Text style={[homeStyles.welcomeText, { color: COLORS.primary }]}>to cook today?</Text>
+                        <Text style={[homeStyles.welcomeText, { color: colors.primary }]}>to cook today?</Text>
                     </View>
-                    <TouchableOpacity
-                        style={homeStyles.profileButton}
-                        onPress={() => router.push('/(tabs)/search')}
-                    >
-                        <Ionicons name="search-outline" size={24} color={COLORS.text} />
-                    </TouchableOpacity>
+                    <View style={homeStyles.headerActions}>
+                        {/* Theme Picker Button */}
+                        <TouchableOpacity
+                            style={homeStyles.themeButton}
+                            onPress={() => setThemePickerVisible(true)}
+                            activeOpacity={0.8}
+                        >
+                            <Ionicons name="color-palette-outline" size={22} color="#fff" />
+                        </TouchableOpacity>
+                        {/* Search Button */}
+                        <TouchableOpacity
+                            style={homeStyles.profileButton}
+                            onPress={() => router.push('/(tabs)/search')}
+                        >
+                            <Ionicons name="search-outline" size={24} color={colors.text} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
                 {/* Featured Section */}
@@ -135,16 +151,16 @@ const HomeScreen = () => {
                                         </Text>
                                         <View style={homeStyles.featuredMeta}>
                                             <View style={homeStyles.metaItem}>
-                                                <Ionicons name="time-outline" size={16} color={COLORS.white} />
+                                                <Ionicons name="time-outline" size={16} color={colors.white} />
                                                 <Text style={homeStyles.metaText}>{featuredRecipe.cookTime}</Text>
                                             </View>
                                             <View style={homeStyles.metaItem}>
-                                                <Ionicons name="people-outline" size={16} color={COLORS.white} />
+                                                <Ionicons name="people-outline" size={16} color={colors.white} />
                                                 <Text style={homeStyles.metaText}>{featuredRecipe.servings}</Text>
                                             </View>
                                             {featuredRecipe.area && (
                                                 <View style={homeStyles.metaItem}>
-                                                    <Ionicons name="location-outline" size={16} color={COLORS.white} />
+                                                    <Ionicons name="location-outline" size={16} color={colors.white} />
                                                     <Text style={homeStyles.metaText}>{featuredRecipe.area}</Text>
                                                 </View>
                                             )}
@@ -184,7 +200,7 @@ const HomeScreen = () => {
                     ) : (
                         !loading && (
                             <View style={homeStyles.emptyState}>
-                                <Ionicons name="restaurant-outline" size={64} color={COLORS.textLight} />
+                                <Ionicons name="restaurant-outline" size={64} color={colors.textLight} />
                                 <Text style={homeStyles.emptyTitle}>No recipes found</Text>
                                 <Text style={homeStyles.emptyDescription}>Try a different category</Text>
                             </View>
@@ -192,6 +208,12 @@ const HomeScreen = () => {
                     )}
                 </View>
             </ScrollView>
+
+            {/* Theme Picker Modal */}
+            <ThemePicker
+                visible={themePickerVisible}
+                onClose={() => setThemePickerVisible(false)}
+            />
         </View>
     );
 };

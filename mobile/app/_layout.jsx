@@ -2,6 +2,7 @@ import { Slot } from "expo-router";
 import { ClerkProvider } from "@clerk/expo";
 import * as SecureStore from 'expo-secure-store';
 import SafeScreen from "../components/SafeScreen";
+import { ThemeProvider } from "../context/ThemeContext";
 
 // Clerk needs a token cache to store user tokens
 const tokenCache = {
@@ -31,10 +32,12 @@ if (!publishableKey) {
 
 export default function RootLayout() {
   return (
-    <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
-      <SafeScreen>
-        <Slot />
-      </SafeScreen>
-    </ClerkProvider>
+    <ThemeProvider>
+      <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
+        <SafeScreen>
+          <Slot />
+        </SafeScreen>
+      </ClerkProvider>
+    </ThemeProvider>
   );
 }

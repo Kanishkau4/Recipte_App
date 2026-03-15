@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TouchableOpacity, View, Text } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { recipeCardStyles } from '../assets/styles/home.styles';
-import { COLORS } from '../constants/colors';
+import { makeRecipeCardStyles } from '../assets/styles/home.styles';
+import { useTheme } from '../context/ThemeContext';
 
 const RecipeCard = ({ recipe }) => {
     const router = useRouter();
+    const { colors } = useTheme();
+    const recipeCardStyles = useMemo(() => makeRecipeCardStyles(colors), [colors]);
 
     return (
         <TouchableOpacity
@@ -32,11 +34,11 @@ const RecipeCard = ({ recipe }) => {
                 </Text>
                 <View style={recipeCardStyles.footer}>
                     <View style={recipeCardStyles.timeContainer}>
-                        <Ionicons name="time-outline" size={12} color={COLORS.textLight} />
+                        <Ionicons name="time-outline" size={12} color={colors.textLight} />
                         <Text style={recipeCardStyles.timeText}>{recipe.cookTime}</Text>
                     </View>
                     <View style={recipeCardStyles.servingsContainer}>
-                        <Ionicons name="people-outline" size={12} color={COLORS.textLight} />
+                        <Ionicons name="people-outline" size={12} color={colors.textLight} />
                         <Text style={recipeCardStyles.servingsText}>{recipe.servings}</Text>
                     </View>
                 </View>
