@@ -11,7 +11,7 @@ const SignInScreen = () => {
   const router = useRouter();
   const { signIn } = useSignIn(); // isLoaded removed
   const { setActive } = useClerk();
-  
+
   const { colors } = useTheme();
   const authStyles = useMemo(() => makeAuthStyles(colors), [colors]);
 
