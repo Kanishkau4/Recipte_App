@@ -38,6 +38,26 @@ jobs:
 
       - name: 🚀 Build APK
         working-directory: ./mobile
-        # The --non-interactive flag ignores prompts, --no-wait finishes the Github Action without holding up until the build is fully done.
-        # It triggers the profile "preview" which we set up to build an interactive APK.
-        run: eas build --platform android --profile preview --non-interactive --no-wait
+        # We removed --no-wait so GitHub Actions waits for the EAS build to finish.
+        # We added --json to output the build details nicely so we can grab the download URL.
+        run: eas build --platform android --profile preview --non-interactive --json > eas-build.json
+
+      - name: 📥 Download APK from Expo
+        working-directory: ./mobile
+        run: |
+          # The JSON output contains the URL. We use jq to extract it and wget to download it.
+          apk_url=$(jq -r '.[0].artifacts.buildUrl' eas-build.json)
+          echo "Downloading from: $apk_url"
+          wget $apk_url -O QuickBites.apk
+
+      - name: 📦 Upload to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          # This dynamically generates a new tag/release for every build (e.g., v1.0.0-1, v1.0.0-2)
+          tag_name: "v1.0.0-${{ github.run_number }}"
+          name: "QuickBites APK - Build ${{ github.run_number }}"
+          files: mobile/QuickBites.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
