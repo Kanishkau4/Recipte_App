@@ -23,7 +23,7 @@ const AppSplashScreen = ({ onFinish }) => {
     return (
         <View style={styles.container}>
             <ImageBackground
-                source={require('../assets/images/splash_backgroud.png')}
+                source={require('../assets/images/splash_background.png')}
                 style={styles.backgroundImage}
                 contentFit="cover"
             >
