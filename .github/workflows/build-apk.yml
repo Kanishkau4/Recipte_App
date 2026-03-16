@@ -1,0 +1,42 @@
+name: Build Android APK
+
+# This action runs when you push to the 'main' branch
+# You can change this to trigger on pull requests or manually as well
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # This allows you to manually trigger the workflow from the GitHub UI
+
+jobs:
+  build_android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🏗 Setup repository
+        uses: actions/checkout@v4
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18 # Ensure you're using whichever Node version works on your machine
+          cache: npm
+          cache-dependency-path: 'mobile/package-lock.json' # Change to yarn.lock if you use yarn
+
+      - name: 🏗 Setup Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }} # Connects via the secret you added in Step 2
+
+      - name: 📦 Install dependencies
+        working-directory: ./mobile
+        run: npm install
+
+      - name: 🚀 Build APK
+        working-directory: ./mobile
+        # The --non-interactive flag ignores prompts, --no-wait finishes the Github Action without holding up until the build is fully done.
+        # It triggers the profile "preview" which we set up to build an interactive APK.
+        run: eas build --platform android --profile preview --non-interactive --no-wait
