@@ -35,7 +35,7 @@ jobs:
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
-          packager: npm 
+          packager: npm    
           token: ${{ secrets.EXPO_TOKEN }} 
 
       - name: 📦 Install dependencies
@@ -45,6 +45,13 @@ jobs:
       - name: 🔐 Create .env file
         working-directory: ./mobile
         run: echo "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }}" > .env
+
+      # 💡 Increase Gradle Memory
+      - name: 🛠 Increase Gradle Memory
+        working-directory: ./mobile
+        run: |
+          mkdir -p android
+          echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m" > android/gradle.properties
 
       - name: 🚀 Build APK Locally
         working-directory: ./mobile
