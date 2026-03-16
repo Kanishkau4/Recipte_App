@@ -4,10 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: 
-
-permissions:
-  contents: write
+  workflow_dispatch: # This allows you to manually trigger the workflow from the GitHub UI
 
 jobs:
   build_android:
@@ -23,36 +20,30 @@ jobs:
         with:
           node-version: 18 
           cache: npm
-          cache-dependency-path: 'mobile/package-lock.json' 
-
-      - name: 🏗 Setup Java 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
+          cache-dependency-path: 'mobile/package-lock.json' # Change to yarn.lock if you use yarn
 
       - name: 🏗 Setup Expo and EAS
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           packager: npm
-          token: ${{ secrets.EXPO_TOKEN }} 
+          token: ${{ secrets.EXPO_TOKEN }} # Connects via the secret you added in Step 2
 
       - name: 📦 Install dependencies
         working-directory: ./mobile
         run: npm install
 
-      - name: 🔐 Create .env file
-        working-directory: ./mobile
-        run: echo "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }}" > .env
-
-      - name: 🚀 Build APK Locally
+      - name: 🚀 Build APK
         working-directory: ./mobile
         run: eas build --platform android --profile preview --local --non-interactive
 
-      - name: 📝 Rename APK
+      - name: 📥 Download APK from Expo
         working-directory: ./mobile
-        run: mv *.apk QuickBites.apk
+        run: |
+          # The JSON output contains the URL. We use jq to extract it and wget to download it.
+          apk_url=$(jq -r '.[0].artifacts.buildUrl' eas-build.json)
+          echo "Downloading from: $apk_url"
+          wget $apk_url -O QuickBites.apk
 
       - name: 📦 Upload to GitHub Releases
         uses: softprops/action-gh-release@v2
