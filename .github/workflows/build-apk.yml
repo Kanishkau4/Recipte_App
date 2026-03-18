@@ -1,73 +1,52 @@
 name: Build Android APK
-
 on:
   push:
     branches:
       - main
   workflow_dispatch: 
-
 permissions:
   contents: write
 
 jobs:
-  build_android:
-    name: Build Android APK
+  build:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: 🏗 Setup repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: 🏗 Setup Node
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20 
+          node-version: 20
           cache: npm
-          cache-dependency-path: 'mobile/package-lock.json' 
+          cache-dependency-path: 'mobile/package-lock.json'
 
-      - name: 🏗 Setup Java 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: 🏗 Setup Expo and EAS
+      - name: Setup Expo
         uses: expo/expo-github-action@v8
         with:
+          expo-version: latest
           eas-version: latest
-          packager: npm    
-          token: ${{ secrets.EXPO_TOKEN }} 
+          token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         working-directory: ./mobile
-        run: npm install
+        run: npm install --legacy-peer-deps
 
-      - name: 🔐 Create .env file
+      - name: Build on EAS (Cloud)
         working-directory: ./mobile
-        run: echo "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }}" > .env
+        run: eas build --platform android --profile preview --non-interactive --json > eas-build.json
 
-      # 💡 Increase Gradle Memory
-      - name: 🛠 Increase Gradle Memory
+      - name: Download APK
         working-directory: ./mobile
         run: |
-          mkdir -p android
-          echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m" > android/gradle.properties
+          apk_url=$(jq -r '.[0].artifacts.buildUrl' eas-build.json)
+          curl -L $apk_url -o QuickBites.apk
 
-      - name: 🚀 Build APK Locally
-        working-directory: ./mobile
-        run: eas build --platform android --profile preview --local --non-interactive
-
-      - name: 📝 Rename APK
-        working-directory: ./mobile
-        run: mv *.apk QuickBites.apk
-
-      - name: 📦 Upload to GitHub Releases
+      - name: Release to GitHub
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "v1.0.0-${{ github.run_number }}"
+          tag_name: "v1.0.${{ github.run_number }}"
           name: "QuickBites APK - Build ${{ github.run_number }}"
           files: mobile/QuickBites.apk
-          draft: false
-          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
