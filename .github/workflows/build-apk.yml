@@ -44,13 +44,27 @@ jobs:
       # --json කෑල්ලෙන් කරන්නේ Build උනාට පස්සේ එන Download Link එක අල්ලගන්න එක.
       - name: ☁️ Build APK on EAS Cloud
         working-directory: ./mobile
-        run: eas build --platform android --profile preview --non-interactive --json > eas-build.json
+        run: |
+          eas build --platform android --profile preview --non-interactive --json > eas-build.json || {
+            echo "Build failed! Check the EAS dashboard for details:"
+            echo "https://expo.dev/accounts/kanishkau/projects/quick-bites/builds"
+            exit 1
+          }
 
       # 💡 Expo එකෙන් දෙන Link එකෙන් APK එක GitHub එකට Download කරගන්නවා
       - name: ⬇️ Download APK
         working-directory: ./mobile
         run: |
+          if [ ! -f eas-build.json ]; then
+            echo "Error: eas-build.json not found. Build may have failed."
+            exit 1
+          fi
           APK_URL=$(jq -r '.[0].artifacts.buildUrl' eas-build.json)
+          if [ "$APK_URL" = "null" ] || [ -z "$APK_URL" ]; then
+            echo "Error: Could not extract build URL from eas-build.json"
+            cat eas-build.json
+            exit 1
+          fi
           echo "Downloading APK from $APK_URL"
           wget $APK_URL -O QuickBites.apk
 
