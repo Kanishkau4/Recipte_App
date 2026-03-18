@@ -1,48 +1,67 @@
-name: Build Android APK
-
+name: Build and Release APK
 
 on:
   push:
     branches:
-      - main  
+      - main
+  workflow_dispatch: 
+
+permissions:
+  contents: write
 
 jobs:
-  build:
+  build_and_release:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: 🛠 Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20 
+          cache: npm
+          cache-dependency-path: 'mobile/package-lock.json' 
 
-      - name: Setup Java 17 (Android Build වලට අනිවාර්යයි)
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Setup Expo and EAS
+      - name: 🚀 Setup Expo and EAS
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+          packager: npm    
+          token: ${{ secrets.EXPO_TOKEN }} 
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
+        working-directory: ./mobile
         run: npm install
 
-      - name: Create .env file
+      # Clerk එකට ඕනේ කරන Key එක දෙනවා
+      - name: 🔐 Create .env file
+        working-directory: ./mobile
         run: echo "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }}" > .env
 
+      # 💡 මාරම වැදගත් තැන: --local කෑල්ල නෑ! මේක Build වෙන්නේ Expo Cloud එකේ. 
+      # --json කෑල්ලෙන් කරන්නේ Build උනාට පස්සේ එන Download Link එක අල්ලගන්න එක.
+      - name: ☁️ Build APK on EAS Cloud
+        working-directory: ./mobile
+        run: eas build --platform android --profile preview --non-interactive --json > eas-build.json
 
-      - name: Build APK
-        run: eas build --platform android --profile preview --local --non-interactive
+      # 💡 Expo එකෙන් දෙන Link එකෙන් APK එක GitHub එකට Download කරගන්නවා
+      - name: ⬇️ Download APK
+        working-directory: ./mobile
+        run: |
+          APK_URL=$(jq -r '.[0].artifacts.buildUrl' eas-build.json)
+          echo "Downloading APK from $APK_URL"
+          wget $APK_URL -O QuickBites.apk
 
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v3
+      # 💡 Download කරගත්ත APK එක කෙලින්ම Release එකට Upload කරනවා!
+      - name: 🎁 Upload to GitHub Releases
+        uses: softprops/action-gh-release@v2
         with:
-          name: app-apk
-          path: "*.apk"
+          tag_name: "v1.0.0-${{ github.run_number }}"
+          name: "QuickBites APK - Build ${{ github.run_number }}"
+          files: mobile/QuickBites.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
